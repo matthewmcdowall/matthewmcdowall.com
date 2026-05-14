@@ -533,7 +533,7 @@ export default async function Home() {
             <div className="contact-inner reveal">
               <h2>Let&apos;s build something.</h2>
               <p className="subtitle">Open to internships, collaborations, and interesting problems.</p>
-              <a href="mailto:matt.mcdowall77@gmail.com" className="contact-email-btn">
+              <a href="/contact" className="contact-email-btn">
                 {"✉"} Say Hello
               </a>
               <div className="social-links" style={{ marginTop: "36px" }}>
