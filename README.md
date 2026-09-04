@@ -47,3 +47,11 @@ launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.matthewmcdowall.port
 ```
 
 `launchctl kickstart -k gui/$(id -u)/com.matthewmcdowall.portfolio-stats` runs it immediately; `DRY_RUN=1 bash scripts/sync-and-push.sh` runs it without committing; the log is `~/Library/Logs/portfolio-stats.log`.
+
+The job pushes with whatever credentials git resolves for this repo. On a machine where the global git credential is a different GitHub account (e.g. a work account), pin this repo to the right one without touching global config — both accounts logged into `gh`:
+
+```bash
+git config --local credential.helper ''
+git config --local --add credential.helper '!f() { if [ "$1" = get ]; then echo username=matthewmcdowall; echo "password=$(gh auth token --user matthewmcdowall)"; fi; }; f'
+git remote set-url origin https://matthewmcdowall@github.com/matthewmcdowall/matthewmcdowall.com.git
+```
