@@ -1,5 +1,4 @@
-import fs from "fs";
-import path from "path";
+import snapshot from "@/public/data.json";
 
 // ==========================================
 // Types
@@ -24,27 +23,13 @@ export interface HuggingFaceData {
   profileUrl: string;
 }
 
-export interface StravaActivity {
-  name: string;
-  type: string;
-  distance: number;
-  movingTime: number;
-  date: string;
-  elevation: number;
-}
-
-export interface StravaData {
-  username: string;
-  athleteId: string;
-  profileUrl: string;
-  recentActivities: StravaActivity[];
-}
-
 export interface ClaudeDailyActivity {
   date: string;
   messageCount: number;
   sessionCount: number;
   toolCallCount: number;
+  /** Total tokens (input + output + cache) that day. Absent on rows recorded before tracking began. */
+  tokenCount?: number;
 }
 
 export interface ClaudeData {
@@ -62,9 +47,30 @@ export interface SpotifyData {
 export interface PortfolioData {
   github: GitHubData | null;
   huggingface: HuggingFaceData | null;
-  strava: StravaData | null;
   claude: ClaudeData | null;
   spotify: SpotifyData;
+}
+
+// ==========================================
+// Committed snapshot (public/data.json)
+// Bundled at build time; the daily sync job commits a fresh one, and the
+// resulting deploy is how the Claude numbers reach the site. It also serves
+// as the fallback for the live fetches below.
+// ==========================================
+
+interface Snapshot {
+  lastUpdated?: string;
+  claude?: ClaudeData | null;
+  github?: GitHubData | null;
+  huggingface?: HuggingFaceData | null;
+}
+
+const SNAPSHOT = snapshot as unknown as Snapshot;
+
+const REVALIDATE_SECONDS = 3600;
+
+function asCount(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
 }
 
 // ==========================================
@@ -74,16 +80,16 @@ export interface PortfolioData {
 async function fetchGitHub(): Promise<GitHubData | null> {
   try {
     const res = await fetch("https://api.github.com/users/matthewmcdowall", {
-      next: { revalidate: 3600 },
+      next: { revalidate: REVALIDATE_SECONDS },
       headers: { "User-Agent": "portfolio/1.0" },
     });
     if (!res.ok) return null;
     const data = await res.json();
     return {
       username: "matthewmcdowall",
-      publicRepos: data.public_repos ?? 0,
-      followers: data.followers ?? 0,
-      following: data.following ?? 0,
+      publicRepos: asCount(data.public_repos),
+      followers: asCount(data.followers),
+      following: asCount(data.following),
       profileUrl: "https://github.com/matthewmcdowall",
       contribChartUrl: "https://ghchart.rshah.org/matthewmcdowall",
     };
@@ -100,93 +106,19 @@ async function fetchHuggingFace(): Promise<HuggingFaceData | null> {
   try {
     const res = await fetch(
       "https://huggingface.co/api/users/MatthewMcDowall/overview",
-      { next: { revalidate: 3600 }, headers: { "User-Agent": "portfolio/1.0" } }
+      { next: { revalidate: REVALIDATE_SECONDS }, headers: { "User-Agent": "portfolio/1.0" } }
     );
     if (!res.ok) return null;
     const data = await res.json();
     return {
       username: "MatthewMcDowall",
-      numModels: data.numModels ?? 0,
-      numDatasets: data.numDatasets ?? 0,
-      numSpaces: data.numSpaces ?? 0,
-      numFollowers: data.numFollowers ?? 0,
-      numFollowing: data.numFollowing ?? 0,
+      numModels: asCount(data.numModels),
+      numDatasets: asCount(data.numDatasets),
+      numSpaces: asCount(data.numSpaces),
+      numFollowers: asCount(data.numFollowers),
+      numFollowing: asCount(data.numFollowing),
       profileUrl: "https://huggingface.co/MatthewMcDowall",
     };
-  } catch {
-    return null;
-  }
-}
-
-// ==========================================
-// Strava — OAuth refresh token flow
-// ==========================================
-
-async function fetchStrava(): Promise<StravaData | null> {
-  const clientId = process.env.STRAVA_CLIENT_ID;
-  const clientSecret = process.env.STRAVA_CLIENT_SECRET;
-  const refreshToken = process.env.STRAVA_REFRESH_TOKEN;
-
-  if (!clientId || !clientSecret || !refreshToken) return null;
-
-  try {
-    // Exchange refresh token for access token
-    const tokenRes = await fetch("https://www.strava.com/oauth/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        client_id: clientId,
-        client_secret: clientSecret,
-        refresh_token: refreshToken,
-        grant_type: "refresh_token",
-      }),
-      cache: "no-store",
-    });
-    if (!tokenRes.ok) return null;
-    const tokens = await tokenRes.json();
-
-    // Fetch recent activities
-    const actRes = await fetch(
-      "https://www.strava.com/api/v3/athlete/activities?per_page=5",
-      {
-        headers: { Authorization: `Bearer ${tokens.access_token}` },
-        next: { revalidate: 3600 },
-      }
-    );
-    if (!actRes.ok) return null;
-    const activities = await actRes.json();
-
-    return {
-      username: "matthew mcdowall",
-      athleteId: "93790524",
-      profileUrl: "https://www.strava.com/athletes/93790524",
-      recentActivities: activities.map(
-        (a: { name: string; type: string; distance: number; moving_time: number; start_date_local: string; total_elevation_gain: number }) => ({
-          name: a.name ?? "",
-          type: a.type ?? "Run",
-          distance: a.distance ?? 0,
-          movingTime: a.moving_time ?? 0,
-          date: (a.start_date_local ?? "").slice(0, 10),
-          elevation: a.total_elevation_gain ?? 0,
-        })
-      ),
-    };
-  } catch {
-    return null;
-  }
-}
-
-// ==========================================
-// Claude — read from local data.json
-// (updated by sync-claude-stats.py + git push)
-// ==========================================
-
-function readClaudeStats(): ClaudeData | null {
-  try {
-    const dataPath = path.join(process.cwd(), "public", "data.json");
-    const raw = fs.readFileSync(dataPath, "utf-8");
-    const data = JSON.parse(raw);
-    return data.claude ?? null;
   } catch {
     return null;
   }
@@ -197,37 +129,12 @@ function readClaudeStats(): ClaudeData | null {
 // ==========================================
 
 export async function getPortfolioData(): Promise<PortfolioData> {
-  const [github, huggingface, strava] = await Promise.all([
-    fetchGitHub(),
-    fetchHuggingFace(),
-    fetchStrava(),
-  ]);
-
-  const claude = readClaudeStats();
-
-  // Fallback: if live fetches fail, try data.json for GitHub/HF/Strava too
-  let fallbackGitHub = github;
-  let fallbackHF = huggingface;
-  let fallbackStrava = strava;
-
-  if (!github || !huggingface || !strava) {
-    try {
-      const dataPath = path.join(process.cwd(), "public", "data.json");
-      const raw = fs.readFileSync(dataPath, "utf-8");
-      const data = JSON.parse(raw);
-      if (!github && data.github) fallbackGitHub = data.github;
-      if (!huggingface && data.huggingface) fallbackHF = data.huggingface;
-      if (!strava && data.strava) fallbackStrava = data.strava;
-    } catch {
-      // no fallback
-    }
-  }
+  const [github, huggingface] = await Promise.all([fetchGitHub(), fetchHuggingFace()]);
 
   return {
-    github: fallbackGitHub,
-    huggingface: fallbackHF,
-    strava: fallbackStrava,
-    claude,
+    github: github ?? SNAPSHOT.github ?? null,
+    huggingface: huggingface ?? SNAPSHOT.huggingface ?? null,
+    claude: SNAPSHOT.claude ?? null,
     spotify: { showId: "1F1rBp40lgfZfIP5lLZVaK", label: "Currently Listening" },
   };
 }

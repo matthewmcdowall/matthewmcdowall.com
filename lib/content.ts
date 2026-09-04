@@ -37,7 +37,12 @@ export function getAllPosts(type: ContentType): Post[] {
     .sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 }
 
+// Slugs come from the URL. Whitelisting the charset (no dots, no slashes)
+// means the path below can never leave the content directory.
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
+
 export function getPostBySlug(type: ContentType, slug: string): Post | null {
+  if (!SLUG_PATTERN.test(slug)) return null;
   const dir = contentDir(type);
   const mdPath = path.join(dir, `${slug}.md`);
   const mdxPath = path.join(dir, `${slug}.mdx`);

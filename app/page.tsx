@@ -2,6 +2,11 @@ import ClientBehaviors from "@/components/ClientBehaviors";
 import BentoData from "@/components/BentoData";
 import { getPortfolioData } from "@/lib/data";
 
+// ISR: prerendered, then regenerated in the background at most hourly.
+// Nothing here uses request-time APIs, so the page is served from the CDN
+// and the live-stat fetches in lib/data.ts run once per hour, not per visitor.
+export const revalidate = 3600;
+
 export default async function Home() {
   const data = await getPortfolioData();
   return (
@@ -226,49 +231,15 @@ export default async function Home() {
                   </div>
                   <span className="bento-username">@MatthewMcDowall</span>
                 </div>
-                <div className="bento-stats-row">
-                  <div>
-                    <span className="bento-stat" id="hf-following">{data.huggingface?.numFollowing ?? "--"}</span>
+                <div className="bento-stats-row" style={{ gap: "20px" }}>
+                  <div style={{ border: "1.5px solid #E5E0D8", borderRadius: "6px", padding: "8px 14px", flex: 1 }}>
                     <span className="bento-label">Following</span>
+                    <span className="bento-stat" style={{ fontSize: "1.2rem" }} id="hf-following">{data.huggingface?.numFollowing ?? "--"}</span>
                   </div>
                 </div>
-                <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--muted)", marginTop: "12px" }}>Exploring models, datasets &amp; spaces</p>
-              </a>
-
-              {/* Strava */}
-              <a href="https://www.strava.com/athletes/93790524" target="_blank" rel="noopener" className="bento-card bento-wide" id="strava-card">
-                <div className="bento-card-header">
-                  <div className="bento-card-icon strava">
-                    <svg viewBox="0 0 24 24" fill="white"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
-                  </div>
-                  <span className="bento-username" id="strava-username">--</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "baseline", gap: "32px", marginTop: "8px" }}>
-                  <div>
-                    <span className="bento-stat" style={{ color: "#FC4C02" }} id="strava-frequency">--</span>
-                    <span className="bento-label">Runs / Week</span>
-                  </div>
-                  <div>
-                    <span className="bento-label" style={{ fontSize: "0.8rem" }} id="strava-location"></span>
-                  </div>
-                </div>
-                <div data-strava-bars="" style={{ display: "flex", gap: "4px", marginTop: "14px" }}>
-                  <span style={{ width: "100%", height: "6px", background: "#FC4C02", borderRadius: "2px" }}></span>
-                  <span style={{ width: "100%", height: "6px", background: "#FC4C02", borderRadius: "2px" }}></span>
-                  <span style={{ width: "100%", height: "6px", background: "#FDDCC8", borderRadius: "2px" }}></span>
-                  <span style={{ width: "100%", height: "6px", background: "#FC4C02", borderRadius: "2px" }}></span>
-                  <span style={{ width: "100%", height: "6px", background: "#FC4C02", borderRadius: "2px" }}></span>
-                  <span style={{ width: "100%", height: "6px", background: "#FDDCC8", borderRadius: "2px" }}></span>
-                  <span style={{ width: "100%", height: "6px", background: "#FC4C02", borderRadius: "2px" }}></span>
-                </div>
-                <div data-strava-days="" style={{ display: "flex", justifyContent: "space-between", marginTop: "4px" }}>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Mon</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Tue</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Wed</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Thu</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Fri</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Sat</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)" }}>Sun</span>
+                <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--muted)", marginTop: "12px", flex: 1 }}>Exploring models, datasets &amp; spaces</p>
+                <div style={{ marginTop: "10px" }}>
+                  <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: "0.7rem", padding: "4px 12px", background: "#FFD21E", color: "#1A1A1A", borderRadius: "12px" }}>#HuggingFace</span>
                 </div>
               </a>
 
@@ -537,11 +508,11 @@ export default async function Home() {
                 {"✉"} Say Hello
               </a>
               <div className="social-links" style={{ marginTop: "36px" }}>
-                <a href="https://github.com/matthewmcdowall" target="_blank" className="social-link">
+                <a href="https://github.com/matthewmcdowall" target="_blank" rel="noopener noreferrer" className="social-link">
                   <span className="tooltip">See my code!</span>
                   <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                 </a>
-                <a href="https://linkedin.com/in/matthewmcdowall" target="_blank" className="social-link">
+                <a href="https://linkedin.com/in/matthewmcdowall" target="_blank" rel="noopener noreferrer" className="social-link">
                   <span className="tooltip">Let&apos;s connect!</span>
                   <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                 </a>
@@ -567,8 +538,6 @@ export default async function Home() {
         claudeDays={data.claude?.activeDays}
         spotifyShowId={data.spotify.showId}
         spotifyLabel={data.spotify.label}
-        stravaActivities={data.strava?.recentActivities}
-        stravaUsername={data.strava?.username}
       />
       <ClientBehaviors />
     </>

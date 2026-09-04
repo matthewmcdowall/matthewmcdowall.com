@@ -7,6 +7,10 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+// Only slugs returned by generateStaticParams exist; anything else is a 404
+// at the edge and never reaches the filesystem lookup.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return getAllPosts("blog").map((p) => ({ slug: p.slug }));
 }

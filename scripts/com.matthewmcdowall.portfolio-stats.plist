@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!--
+    macOS launchd agent: runs scripts/sync-and-push.sh at 06:00 daily, with a
+    12:00 retry (the script's 20h throttle makes it a no-op if 06:00 succeeded).
+    If the Mac is asleep at a slot, launchd runs the job on wake.
+
+    Install:   cp scripts/com.matthewmcdowall.portfolio-stats.plist ~/Library/LaunchAgents/
+               launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.matthewmcdowall.portfolio-stats.plist
+    Run now:   launchctl kickstart -k gui/$(id -u)/com.matthewmcdowall.portfolio-stats
+    Remove:    launchctl bootout gui/$(id -u)/com.matthewmcdowall.portfolio-stats
+    Log:       ~/Library/Logs/portfolio-stats.log
+  -->
+  <key>Label</key>
+  <string>com.matthewmcdowall.portfolio-stats</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/mattmcdowall/projects/matthewmcdowall.com/scripts/sync-and-push.sh</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>6</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>0</integer></dict>
+  </array>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>/Users/mattmcdowall/Library/Logs/portfolio-stats.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/mattmcdowall/Library/Logs/portfolio-stats.log</string>
+</dict>
+</plist>

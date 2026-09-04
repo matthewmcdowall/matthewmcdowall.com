@@ -489,10 +489,6 @@ section {
   box-shadow: 7px 7px 0px var(--shadow);
 }
 
-.bento-card.bento-wide {
-  grid-column: span 2;
-}
-
 .bento-card-header {
   display: flex;
   align-items: center;
@@ -513,7 +509,6 @@ section {
 .bento-card-icon.github { background: #1A1A1A; }
 .bento-card-icon.spotify { background: #1DB954; }
 .bento-card-icon.huggingface { background: #FFD21E; }
-.bento-card-icon.strava { background: #FC4C02; }
 
 .bento-card-icon svg {
   width: 20px;
@@ -973,10 +968,6 @@ section {
 
   .bento-grid {
     grid-template-columns: 1fr;
-  }
-
-  .bento-card.bento-wide {
-    grid-column: span 1;
   }
 
   .projects-grid {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import type { ClaudeDailyActivity, StravaActivity } from "@/lib/data";
+import type { ClaudeDailyActivity } from "@/lib/data";
 
 function formatTokens(n: number): string {
   if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
@@ -16,8 +16,6 @@ interface Props {
   claudeDays?: number;
   spotifyShowId?: string;
   spotifyLabel?: string;
-  stravaActivities?: StravaActivity[];
-  stravaUsername?: string;
 }
 
 export default function BentoData({
@@ -26,8 +24,6 @@ export default function BentoData({
   claudeDays,
   spotifyShowId,
   spotifyLabel,
-  stravaActivities,
-  stravaUsername,
 }: Props) {
   useEffect(() => {
     // ==========================================
@@ -39,8 +35,17 @@ export default function BentoData({
       if (tokensEl && claudeTokens) tokensEl.textContent = formatTokens(claudeTokens);
       if (daysEl && claudeDays) daysEl.textContent = String(claudeDays);
 
-      const countMap: Record<string, number> = {};
-      claudeActivity.forEach((d) => { countMap[d.date] = d.messageCount; });
+      // Heatmap is coloured by tokens per day (what `/usage` reports). Rows
+      // recorded before token tracking began have no tokenCount, so fall back
+      // to message counts if there are no token rows at all.
+      const msgMap: Record<string, number> = {};
+      const tokenMap: Record<string, number> = {};
+      claudeActivity.forEach((d) => {
+        msgMap[d.date] = d.messageCount;
+        tokenMap[d.date] = d.tokenCount ?? 0;
+      });
+      const useTokens = claudeActivity.some((d) => (d.tokenCount ?? 0) > 0);
+      const valueMap = useTokens ? tokenMap : msgMap;
 
       const now = new Date();
       const dayOfWeek = (now.getDay() + 6) % 7;
@@ -50,15 +55,23 @@ export default function BentoData({
       startDate.setDate(startDate.getDate() - (23 * 7 - 1));
 
       const weeks = 23;
-      const colors: [number, string][] = [
-        [0, "#E5E0D8"], [1, "#E8D5C4"], [6, "#D4A574"],
-        [21, "#C08040"], [101, "#8B5E3C"], [301, "#5C3310"],
-      ];
-      function getColor(count: number): string {
-        for (let i = colors.length - 1; i >= 0; i--) {
-          if (count >= colors[i][0]) return colors[i][1];
-        }
-        return "#E5E0D8";
+
+      // Scale relative to the busiest day in the visible window so the palette
+      // is always fully used, whatever the absolute token volume.
+      let windowMax = 0;
+      for (let i = 0; i < weeks * 7; i++) {
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + i);
+        windowMax = Math.max(windowMax, valueMap[d.toISOString().slice(0, 10)] || 0);
+      }
+      const shades = ["#E5E0D8", "#E8D5C4", "#D4A574", "#C08040", "#8B5E3C", "#5C3310"];
+      const steps = [0.02, 0.08, 0.2, 0.45];
+      function getColor(value: number): string {
+        if (value <= 0 || windowMax <= 0) return shades[0];
+        const ratio = value / windowMax;
+        let level = 1;
+        for (const step of steps) if (ratio >= step) level++;
+        return shades[level];
       }
 
       const grid = document.getElementById("claude-heatmap-grid");
@@ -75,12 +88,16 @@ export default function BentoData({
             const d = new Date(startDate);
             d.setDate(d.getDate() + col * 7 + row);
             const ds = d.toISOString().slice(0, 10);
-            const count = countMap[ds] || 0;
+            const value = valueMap[ds] || 0;
             const inRange = d <= now;
 
             const span = document.createElement("span");
-            span.style.cssText = `width:100%;aspect-ratio:1;border-radius:2px;background:${inRange ? getColor(count) : "transparent"}`;
-            if (inRange && count > 0) span.title = `${count} messages on ${ds}`;
+            span.style.cssText = `width:100%;aspect-ratio:1;border-radius:2px;background:${inRange ? getColor(value) : "transparent"}`;
+            if (inRange && value > 0) {
+              span.title = useTokens
+                ? `${formatTokens(value)} tokens · ${msgMap[ds] || 0} messages on ${ds}`
+                : `${value} messages on ${ds}`;
+            }
             grid.appendChild(span);
 
             if (row === 0 && inRange) {
@@ -108,55 +125,25 @@ export default function BentoData({
     if (spotifyShowId) {
       const labelEl = document.getElementById("spotify-label");
       if (labelEl) labelEl.textContent = spotifyLabel || "Currently Listening";
+      // Built with DOM APIs rather than an HTML string so nothing is ever
+      // parsed as markup; the id is also whitelisted to Spotify's base62 form.
       const embedEl = document.getElementById("spotify-embed");
-      if (embedEl) {
-        embedEl.innerHTML = `<iframe style="border-radius:8px" src="https://open.spotify.com/embed/show/${spotifyShowId}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+      if (embedEl && /^[A-Za-z0-9]{1,64}$/.test(spotifyShowId)) {
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://open.spotify.com/embed/show/${spotifyShowId}?utm_source=generator&theme=0`;
+        iframe.title = "Spotify podcast player";
+        iframe.width = "100%";
+        iframe.height = "152";
+        iframe.loading = "lazy";
+        iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.style.border = "0";
+        iframe.style.borderRadius = "8px";
+        embedEl.replaceChildren(iframe);
       }
     }
 
-    // ==========================================
-    // STRAVA ACTIVITIES
-    // ==========================================
-    if (stravaActivities && stravaActivities.length > 0) {
-      const usernameEl = document.getElementById("strava-username");
-      if (usernameEl) usernameEl.textContent = stravaUsername || "";
-
-      const freqEl = document.getElementById("strava-frequency");
-      if (freqEl) {
-        freqEl.textContent = String(stravaActivities.length);
-        const label = freqEl.nextElementSibling;
-        if (label) label.textContent = "Recent Runs";
-      }
-
-      const locEl = document.getElementById("strava-location");
-      if (locEl) locEl.textContent = `Runner · ${stravaActivities[0].type || "Run"}`;
-
-      const card = document.getElementById("strava-card");
-      if (card) {
-        const barsDiv = card.querySelector('[data-strava-bars]') as HTMLElement | null;
-        const daysDiv = card.querySelector('[data-strava-days]') as HTMLElement | null;
-        if (barsDiv && daysDiv) {
-          let html = "";
-          stravaActivities.forEach((a) => {
-            const km = (a.distance / 1000).toFixed(1);
-            const mins = Math.round(a.movingTime / 60);
-            html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #F0EBE3;">`;
-            html += `<div style="display:flex;flex-direction:column;">`;
-            html += `<span style="font-family:var(--font-display);font-weight:600;font-size:0.82rem;">${a.name}</span>`;
-            html += `<span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);">${a.date}</span>`;
-            html += `</div>`;
-            html += `<div style="display:flex;gap:12px;font-family:var(--font-mono);font-size:0.72rem;">`;
-            html += `<span style="color:#FC4C02;font-weight:600;">${km} km</span>`;
-            html += `<span style="color:var(--muted);">${mins} min</span>`;
-            html += `</div>`;
-            html += `</div>`;
-          });
-          barsDiv.outerHTML = html;
-          daysDiv.remove();
-        }
-      }
-    }
-  }, [claudeActivity, claudeTokens, claudeDays, spotifyShowId, spotifyLabel, stravaActivities, stravaUsername]);
+  }, [claudeActivity, claudeTokens, claudeDays, spotifyShowId, spotifyLabel]);
 
   return null;
 }
