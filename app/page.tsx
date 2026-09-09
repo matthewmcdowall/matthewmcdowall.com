@@ -37,11 +37,11 @@ export default async function Home() {
           <div className="terminal-body" id="terminalBody">
             <div className="terminal-line" data-delay="200">
               <span className="prompt">{"❯"}</span>
-              <span className="t-cmd">matt@unh ~ % init_portfolio</span>
+              <span className="t-cmd">matt@nlai ~ % init_portfolio</span>
             </div>
             <div className="terminal-line" data-delay="500">
               <span className="pipe">{"│"}</span>
-              <span className="t-info">loading RAG pipelines and LangChain modules...</span>
+              <span className="t-info">loading agentic pipelines and LangGraph modules...</span>
             </div>
             <div className="terminal-line" data-delay="900">
               <span className="pipe">{"│"}</span>
@@ -107,18 +107,18 @@ export default async function Home() {
             <div className="hero-grid">
               <div className="hero-left">
                 <h1>Hi, I&apos;m <span className="underline-cyan">Matthew McDowall</span></h1>
-                <p className="hero-bio">I build end-to-end AI systems that ship to production — not just demos. From RAG pipelines and LLM tooling to data infrastructure, I turn ideas into real products. <strong>Got an idea?</strong></p>
+                <p className="hero-bio">I build end-to-end AI systems that ship to production — not just demos. From agentic LLM workflows and RAG pipelines to the data infrastructure under them, I turn ideas into products people actually use. <strong>Got an idea?</strong></p>
                 <div className="hero-cta">
                   <a href="#contact" className="btn btn-primary">Let&apos;s Talk</a>
                   <a href="#projects" className="btn btn-ghost">See My Work {"↓"}</a>
                 </div>
               </div>
               <div className="hero-tags">
+                <div className="hero-tag">#AgenticAI</div>
                 <div className="hero-tag">#RAGSystems</div>
                 <div className="hero-tag">#LLMs</div>
-                <div className="hero-tag">#LangChain</div>
+                <div className="hero-tag">#LangGraph</div>
                 <div className="hero-tag">#Python</div>
-                <div className="hero-tag">#DataScience</div>
               </div>
             </div>
           </div>
@@ -143,14 +143,14 @@ export default async function Home() {
               <div className="reveal">
                 <h2 className="section-title">About</h2>
                 <div className="about-text">
-                  <p>I&apos;m Matthew McDowall — a Senior at the University of New Hampshire who builds custom, domain-specific, end-to-end AI applications. Not demos. Full systems that go from working with clients and concepts to production.</p>
-                  <p>Currently interning at North Light AI where I architected a supplier-matching system adopted by 50+ SMBs and NASA. I&apos;m deep into applied AI and LLMs — and making them useful in the real world.</p>
+                  <p>I&apos;m Matthew McDowall — an applied AI engineer who builds custom, domain-specific, end-to-end AI applications. Not demos. Full systems that go from client conversations and concepts to production.</p>
+                  <p>I&apos;m the Applied AI &amp; Automation Engineer Lead at North Light AI, where I went from intern to owning the design and production rollout of our core products: an agentic supplier-matching platform used by 200+ SMBs and NASA, and Lesson Desk, an AI teaching platform. B.S. in Data Analytics &amp; Data Science from the University of New Hampshire, class of 2026.</p>
                 </div>
 
                 <div className="fun-facts">
                   <div className="fun-chip">Shipped a product to NASA</div>
-                  <div className="fun-chip">RAG system builder</div>
-                  <div className="fun-chip">RL research lab member</div>
+                  <div className="fun-chip">Intern {"→"} engineering lead</div>
+                  <div className="fun-chip">RAG &amp; agentic systems builder</div>
                 </div>
               </div>
             </div>
@@ -261,9 +261,9 @@ export default async function Home() {
           <div className="marquee-wrap" style={{ marginBottom: "12px" }}>
             <div className="marquee-track">
               <span className="marquee-chip">Python</span>
-              <span className="marquee-chip">R</span>
-              <span className="marquee-chip">SQL</span>
               <span className="marquee-chip">TypeScript</span>
+              <span className="marquee-chip">JavaScript</span>
+              <span className="marquee-chip">SQL</span>
               <span className="marquee-chip">PyTorch</span>
               <span className="marquee-chip">Transformers</span>
               <span className="marquee-chip">Hugging Face</span>
@@ -273,12 +273,11 @@ export default async function Home() {
               <span className="marquee-chip">Spark</span>
               <span className="marquee-chip">FastAPI</span>
               <span className="marquee-chip">React.js</span>
-              <span className="marquee-chip">Streamlit</span>
               {/* Duplicate for seamless loop */}
               <span className="marquee-chip">Python</span>
-              <span className="marquee-chip">R</span>
-              <span className="marquee-chip">SQL</span>
               <span className="marquee-chip">TypeScript</span>
+              <span className="marquee-chip">JavaScript</span>
+              <span className="marquee-chip">SQL</span>
               <span className="marquee-chip">PyTorch</span>
               <span className="marquee-chip">Transformers</span>
               <span className="marquee-chip">Hugging Face</span>
@@ -288,16 +287,16 @@ export default async function Home() {
               <span className="marquee-chip">Spark</span>
               <span className="marquee-chip">FastAPI</span>
               <span className="marquee-chip">React.js</span>
-              <span className="marquee-chip">Streamlit</span>
             </div>
           </div>
 
           {/* Row 2: LLM & RAG (reverse) */}
           <div className="marquee-wrap" style={{ marginBottom: "12px" }}>
             <div className="marquee-track marquee-reverse">
+              <span className="marquee-chip">Agentic Systems</span>
+              <span className="marquee-chip">Claude</span>
               <span className="marquee-chip">Llama</span>
               <span className="marquee-chip">Qwen</span>
-              <span className="marquee-chip">Claude</span>
               <span className="marquee-chip">LoRA / QLoRA</span>
               <span className="marquee-chip">Hybrid Vector + BM25</span>
               <span className="marquee-chip">Semantic Chunking</span>
@@ -307,9 +306,10 @@ export default async function Home() {
               <span className="marquee-chip">pgvector</span>
               <span className="marquee-chip">Docling</span>
               {/* Duplicate */}
+              <span className="marquee-chip">Agentic Systems</span>
+              <span className="marquee-chip">Claude</span>
               <span className="marquee-chip">Llama</span>
               <span className="marquee-chip">Qwen</span>
-              <span className="marquee-chip">Claude</span>
               <span className="marquee-chip">LoRA / QLoRA</span>
               <span className="marquee-chip">Hybrid Vector + BM25</span>
               <span className="marquee-chip">Semantic Chunking</span>
@@ -327,9 +327,10 @@ export default async function Home() {
               <span className="marquee-chip">PostgreSQL</span>
               <span className="marquee-chip">AWS Bedrock</span>
               <span className="marquee-chip">AWS Lambda</span>
+              <span className="marquee-chip">Google Cloud</span>
               <span className="marquee-chip">Git</span>
               <span className="marquee-chip">CI/CD</span>
-              <span className="marquee-chip">ArcGIS</span>
+              <span className="marquee-chip">REST APIs</span>
               <span className="marquee-chip">NLP</span>
               <span className="marquee-chip">Reinforcement Learning</span>
               <span className="marquee-chip">Machine Learning</span>
@@ -338,9 +339,10 @@ export default async function Home() {
               <span className="marquee-chip">PostgreSQL</span>
               <span className="marquee-chip">AWS Bedrock</span>
               <span className="marquee-chip">AWS Lambda</span>
+              <span className="marquee-chip">Google Cloud</span>
               <span className="marquee-chip">Git</span>
               <span className="marquee-chip">CI/CD</span>
-              <span className="marquee-chip">ArcGIS</span>
+              <span className="marquee-chip">REST APIs</span>
               <span className="marquee-chip">NLP</span>
               <span className="marquee-chip">Reinforcement Learning</span>
               <span className="marquee-chip">Machine Learning</span>
@@ -374,10 +376,10 @@ export default async function Home() {
                   </div>
                   <div>
                     <h3>Prime Ready — NHADC</h3>
-                    <p>Hybrid RAG-based matchmaking system that pairs small-to-medium suppliers with Prime contractors, replacing 5-6 weeks of manual discovery with near-instant query responses. Adopted initially by 50+ SMBs and NASA.</p>
+                    <p>Agentic LLM matchmaking platform that pairs small-to-medium suppliers with Prime contractors through natural-language search, cutting 6+ weeks of manual discovery to minutes. Concept to production in 2 months with a 4-person team; now reaching 200+ SMBs and a NASA deployment. Tuning the hybrid retrieval stack raised hit rate@5 from 74% to 92%.</p>
                     <div className="project-tags" style={{ marginTop: "14px" }}>
                       <span className="chip">Python</span>
-                      <span className="chip">LangChain</span>
+                      <span className="chip">LangGraph</span>
                       <span className="chip">AWS Bedrock</span>
                       <span className="chip">pgvector</span>
                       <span className="chip">PostgreSQL</span>
@@ -390,28 +392,29 @@ export default async function Home() {
               <div className="reveal">
                 <div className="card project-card">
                   <h3>AI-Driven NMS Chatbot — SubCom</h3>
-                  <p>Locally-integrated chatbot for SubCom&apos;s subsea cable Network Management System. Parses proprietary NMS documentation, embeds it into a vector database, and exposes natural-language querying through a full backend + frontend stack — fully air-gapped with zero external API calls.</p>
+                  <p>Locally hosted assistant for SubCom&apos;s subsea cable Network Management System. Parses proprietary NMS documentation with Docling, embeds it into ChromaDB, and answers natural-language questions grounded in the source docs — 94% retrieval accuracy (P@10, NDCG@5), sub-second latency on VRAM-constrained VMs, fully air-gapped with zero external API calls.</p>
                   <div className="project-tags">
                     <span className="chip">Qwen3</span>
                     <span className="chip">Ollama</span>
                     <span className="chip">Docling</span>
                     <span className="chip">ChromaDB</span>
                     <span className="chip">FastAPI</span>
-                    <span className="chip">React</span>
+                    <span className="chip">React + TypeScript</span>
                   </div>
                 </div>
               </div>
 
-              {/* Project 3: Coastal Data Pipeline */}
+              {/* Project 3: Lesson Desk */}
               <div className="reveal">
                 <div className="card project-card">
-                  <h3>Coastal Research Pipeline — CCSCR</h3>
-                  <p>Automated data-processing pipeline built for the Cohasset Center for Student Coastal Research. Handles weekly coastal measurements using Python and CronJob scheduling, reducing manual staff effort by ~10 hours/week and improving measurement accuracy by 25%.</p>
+                  <h3>Lesson Desk — North Light AI</h3>
+                  <p>AI-powered teaching platform that automates lesson planning and content creation so educators get their time back. Leading development from architecture through production: Claude-driven generation, a rich in-browser editor, and export to the formats teachers actually use.</p>
                   <div className="project-tags">
-                    <span className="chip">Python</span>
-                    <span className="chip">CronJob</span>
-                    <span className="chip">ArcGIS</span>
-                    <span className="chip">Data Validation</span>
+                    <span className="chip">Claude</span>
+                    <span className="chip">Next.js</span>
+                    <span className="chip">React</span>
+                    <span className="chip">TypeScript</span>
+                    <span className="chip">Firebase</span>
                   </div>
                 </div>
               </div>
@@ -434,37 +437,52 @@ export default async function Home() {
 
               <div className="timeline-item card reveal">
                 <div className="timeline-date">Dec 2024 — Present</div>
-                <h3>Applied AI &amp; Automation Intern</h3>
+                <h3>Applied AI &amp; Automation Engineer Lead</h3>
                 <div className="timeline-company">
                   North Light AI — Durham, NH <span className="badge">Current</span>
                 </div>
+                <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "var(--muted)", margin: "6px 0 10px" }}>Intern (Dec 2024) {"→"} part-time engineer (Sep 2025) {"→"} full-time engineering lead (May 2026), owning the design and production rollout of North Light AI&apos;s core products and managing interns.</p>
                 <ul>
-                  <li>Architected and deployed a Hybrid RAG matchmaking system (Prime Ready) replacing 5-6 weeks of manual discovery with instant query responses</li>
-                  <li>Co-led end-to-end development from concept to production in 2 months with a 4-person team — adopted by 50+ SMBs and NASA</li>
-                  <li>Built data ingestion pipelines for supplier profiles, iterating on retrieval quality through embedding model evaluation, chunk-size tuning, and hybrid vector search scoring</li>
+                  <li>Architected and deployed a fully agentic LLM system on AWS with Python and LangGraph, cutting supplier discovery from 6+ weeks of manual work to minutes via natural-language search</li>
+                  <li>Drove concept-to-production delivery in 2 months with a 4-person team, reaching 200+ SMBs and a NASA deployment</li>
+                  <li>Leading development of Lesson Desk, an AI-powered teaching platform that automates lesson planning and content creation for educators</li>
+                  <li>Raised retrieval hit rate@5 from 74% to 92% on the supplier-profile RAG pipelines through pgvector embedding-model evaluation, chunk-size tuning, and hybrid vector-search scoring</li>
+                  <li>Cleaned and integrated ~100 GB of messy, unstructured data sources via REST APIs, with Git-managed codebases supporting reliable iteration and releases</li>
+                </ul>
+              </div>
+
+              <div className="timeline-item card reveal">
+                <div className="timeline-date">Jan 2026 — May 2026</div>
+                <h3>Student Intern</h3>
+                <div className="timeline-company">
+                  NH Small Business Development Center (SBDC) — New Hampshire (Hybrid)
+                </div>
+                <ul>
+                  <li>Built an LLM-powered co-advisor tool end to end under a Google-funded grant: a RAG pipeline over the advisor knowledge base returning grounded, context-aware answers, moving advisors from a 2:1 to a 1:1 advisor-to-client ratio</li>
+                  <li>Worked directly with SBDC advisors across the country to identify client-support best practices that shaped the tool&apos;s design and feature prioritization</li>
                 </ul>
               </div>
 
               <div className="timeline-item card reveal">
                 <div className="timeline-date">May 2024 — Aug 2024</div>
-                <h3>Data Science Analyst Intern</h3>
+                <h3>Data Analyst Intern</h3>
                 <div className="timeline-company">
                   Cohasset Center for Student Coastal Research — Cohasset, MA
                 </div>
                 <ul>
-                  <li>Engineered an automated data-processing pipeline for weekly coastal measurements using Python and CronJob scheduling, saving ~10 hours/week</li>
-                  <li>Designed data validation protocols delivering a 25% improvement in measurement accuracy</li>
+                  <li>Engineered an automated data-processing pipeline for weekly coastal measurements using Python and scheduled cron jobs, cutting manual staff effort by ~10 hours/week</li>
+                  <li>Designed data-validation protocols with ArcGIS and Python that improved measurement accuracy by 25% and streamlined data access for researchers and external stakeholders</li>
                 </ul>
               </div>
 
               <div className="timeline-item card reveal">
-                <div className="timeline-date">Winter 2024 — Present</div>
+                <div className="timeline-date">Winter 2024 — May 2026</div>
                 <h3>Member, Reinforcement Learning Research Lab</h3>
                 <div className="timeline-company">
                   University of New Hampshire
                 </div>
                 <ul>
-                  <li>Participate in weekly seminar involving peer review and presentation of current RL research literature</li>
+                  <li>Weekly seminar presenting and peer-reviewing current reinforcement learning research literature</li>
                 </ul>
               </div>
 
@@ -487,7 +505,7 @@ export default async function Home() {
               <div className="card edu-card reveal">
                 <h3>B.S. in Data Analytics &amp; Data Science</h3>
                 <div className="school">University of New Hampshire — Durham, NH</div>
-                <div className="year-badge">Aug 2022 — May 2026</div>
+                <div className="year-badge">Graduated May 2026</div>
                 <p>Relevant Coursework: Algorithms, Machine Learning, Linear Algebra, NLP, Reinforcement Learning, Information Retrieval, Probability &amp; Statistics, Game Theory</p>
               </div>
 
