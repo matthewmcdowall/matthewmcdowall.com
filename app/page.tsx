@@ -1,16 +1,27 @@
+import type { Metadata } from "next";
 import ClientBehaviors from "@/components/ClientBehaviors";
 import BentoData from "@/components/BentoData";
 import { getPortfolioData } from "@/lib/data";
+import { siteJsonLd } from "@/lib/site";
 
 // ISR: prerendered, then regenerated in the background at most hourly.
 // Nothing here uses request-time APIs, so the page is served from the CDN
 // and the live-stat fetches in lib/data.ts run once per hour, not per visitor.
 export const revalidate = 3600;
 
+// Netlify also serves the site on its *.netlify.app subdomain; the canonical
+// keeps search engines pointed at the real domain.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
 export default async function Home() {
   const data = await getPortfolioData();
   return (
     <>
+      {/* schema.org Person + WebSite for search engines (see lib/site.ts). */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd).replace(/</g, "\\u003c") }}
+      />
       {/* ======================================
           TERMINAL INTRO
           ====================================== */}
