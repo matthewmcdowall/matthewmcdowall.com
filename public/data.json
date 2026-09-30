@@ -1,9 +1,9 @@
 {
-  "lastUpdated": "2026-09-29T10:00:07.912947+00:00",
+  "lastUpdated": "2026-09-30T10:00:06.515987+00:00",
   "claude": {
-    "totalMessages": 65983,
-    "totalTokens": 18219873733,
-    "activeDays": 228,
+    "totalMessages": 66036,
+    "totalTokens": 18648231325,
+    "activeDays": 229,
     "dailyActivity": [
       {
         "date": "2025-11-03",
@@ -1596,10 +1596,17 @@
       },
       {
         "date": "2026-09-29",
+        "messageCount": 53,
+        "sessionCount": 0,
+        "toolCallCount": 0,
+        "tokenCount": 673482355
+      },
+      {
+        "date": "2026-09-30",
         "messageCount": 0,
         "sessionCount": 0,
         "toolCallCount": 0,
-        "tokenCount": 284394565
+        "tokenCount": 39269802
       }
     ]
   },
