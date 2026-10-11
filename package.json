@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync-stats": "python3 scripts/sync-claude-stats.py"
+    "sync-stats": "python3 scripts/sync-claude-stats.py",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:perf": "playwright test perf budget --project=desktop"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -20,6 +23,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.18",

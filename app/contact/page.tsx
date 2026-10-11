@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="container" style={{ paddingTop: "120px", paddingBottom: "100px", maxWidth: "640px" }}>
+    <main className="container" data-ambient="quiet" style={{ paddingTop: "120px", paddingBottom: "100px", maxWidth: "640px" }}>
       <h1 className="section-title" style={{ marginBottom: "16px" }}>Contact</h1>
       <p style={{ fontSize: "1rem", color: "var(--muted)", marginBottom: "40px", lineHeight: 1.6 }}>
-        Want to chat about a role, project, or AI engineering problem? Send a message — I read every one.
+        Want to chat about a role, project, or AI engineering problem? Send a message. I read every one... well, an agent reads every one ;)
       </p>
       <ContactForm />
     </main>

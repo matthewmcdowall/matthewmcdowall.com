@@ -35,7 +35,7 @@ export default async function BlogPost({ params }: Props) {
       <article>
         <header style={{ marginBottom: "40px" }}>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.82rem", color: "var(--muted)" }}>
-            {new Date(post.frontmatter.date).toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric" })}
+            {new Date(post.frontmatter.date).toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}
           </span>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "clamp(2rem, 4vw, 2.8rem)", lineHeight: 1.1, marginTop: "8px", marginBottom: "12px" }}>
             {post.frontmatter.title}

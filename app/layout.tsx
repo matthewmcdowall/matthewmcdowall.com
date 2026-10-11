@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Ambient from "@/components/Ambient";
 import { PROFILE_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     images: [PROFILE_IMAGE],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     images: [PROFILE_IMAGE.url],
   },
 };
@@ -27,7 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Ambient />
+        {children}
+      </body>
     </html>
   );
 }

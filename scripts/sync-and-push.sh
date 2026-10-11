@@ -46,6 +46,14 @@ fi
 
 python3 scripts/sync-claude-stats.py
 
+# Keep the local restyle experiment (~/projects/site-copy, not a git repo) on
+# the same numbers; it has its own copy of data.json that nothing else updates.
+MIRROR="$HOME/projects/site-copy/public"
+if [[ -d "$MIRROR" ]]; then
+  cp public/data.json "$MIRROR/data.json"
+  log "mirrored data.json to $MIRROR"
+fi
+
 if ! git diff --quiet -- public/data.json; then
   if [[ -n "${DRY_RUN:-}" ]]; then
     log "DRY_RUN set; would commit public/data.json:"

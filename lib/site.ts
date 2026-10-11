@@ -15,7 +15,7 @@ export const SITE_TITLE = "Matthew McDowall — Applied AI Engineer | LLMs, RAG,
 export const SITE_DESCRIPTION =
   "Matthew McDowall — applied AI & machine learning engineer building production LLM, RAG, and agentic AI systems in Python (LangGraph, PyTorch, AWS). Lead engineer at North Light AI. B.S. Data Analytics & Data Science, University of New Hampshire ’26.";
 
-export const PROFILE_IMAGE = { url: "/photo-cropped.jpg", width: 1536, height: 1350, alt: "Matthew McDowall" };
+export const PROFILE_IMAGE = { url: "/og.png", width: 1200, height: 630, alt: "Matthew McDowall" };
 
 export const SOCIAL = {
   github: "https://github.com/matthewmcdowall",

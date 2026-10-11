@@ -30,7 +30,7 @@ export default function BlogIndex() {
             >
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "var(--muted)" }}>
-                  {new Date(post.frontmatter.date).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric" })}
+                  {new Date(post.frontmatter.date).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
                 </span>
                 <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: "1.4rem" }}>
                   {post.frontmatter.title}

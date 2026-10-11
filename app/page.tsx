@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import ClientBehaviors from "@/components/ClientBehaviors";
+import Pyramid from "@/components/Pyramid";
 import BentoData from "@/components/BentoData";
 import { getPortfolioData } from "@/lib/data";
 import { siteJsonLd } from "@/lib/site";
+import Link from "next/link";
+import { getAllPosts } from "@/lib/content";
 
 // ISR: prerendered, then regenerated in the background at most hourly.
 // Nothing here uses request-time APIs, so the page is served from the CDN
@@ -15,6 +18,7 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
   const data = await getPortfolioData();
+  const posts = getAllPosts("blog").slice(0, 3);
   return (
     <>
       {/* schema.org Person + WebSite for search engines (see lib/site.ts). */}
@@ -22,77 +26,13 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd).replace(/</g, "\\u003c") }}
       />
-      {/* ======================================
-          TERMINAL INTRO
-          ====================================== */}
-      <div className="terminal-overlay" id="terminalOverlay">
-        <div className="terminal-wrapper">
-          <div className="terminal-header-text">
-            <div className="terminal-session-label">Terminal Session</div>
-            <div className="terminal-name">Matthew McDowall</div>
-            <div className="terminal-role-label">AI &amp; Data Science Workspace</div>
-          </div>
-
-          <div className="terminal-chrome">
-            <div className="terminal-dots">
-              <span></span><span></span><span></span>
-            </div>
-            <div className="terminal-title">
-              <svg viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              Terminal
-            </div>
-          </div>
-
-          <div className="terminal-body" id="terminalBody">
-            <div className="terminal-line" data-delay="200">
-              <span className="prompt">{"❯"}</span>
-              <span className="t-cmd">matt@nlai ~ % init_portfolio</span>
-            </div>
-            <div className="terminal-line" data-delay="500">
-              <span className="pipe">{"│"}</span>
-              <span className="t-info">loading agentic pipelines and LangGraph modules...</span>
-            </div>
-            <div className="terminal-line" data-delay="900">
-              <span className="pipe">{"│"}</span>
-              <span className="t-success">connected to vector store [pgvector OK]</span>
-            </div>
-            <div className="terminal-line" data-delay="1300">
-              <span className="pipe">{"│"}</span>
-              <span className="t-info">authenticating with AWS Bedrock...</span>
-            </div>
-            <div className="terminal-line" data-delay="1700">
-              <span className="pipe">{"│"}</span>
-              <span className="t-success">session ready. [all systems nominal]</span>
-            </div>
-            <div className="terminal-line" data-delay="2100">
-              <span className="pipe">{"│"}</span>
-              <span className="t-highlight">launching matt.dev environment_v1.0...</span>
-            </div>
-
-            <div className="terminal-cursor-line" id="terminalCursor" data-delay="2400">
-              <span className="prompt">{"❯"}</span>
-              <span className="terminal-cursor"></span>
-            </div>
-
-            <div className="terminal-progress">
-              <div className="terminal-progress-bar" id="terminalProgress"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ======================================
-          SITE CONTENT (hidden until terminal finishes)
-          ====================================== */}
-      <div className="site-content" id="siteContent">
+      <div id="siteContent">
 
         {/* ======================================
             NAVIGATION
             ====================================== */}
         <nav>
-          <a href="#" className="nav-logo">matt.dev</a>
+          <a href="#" className="nav-logo"><Pyramid className="mark-nav" />matt.dev</a>
           <button
             className="nav-toggle"
             id="navToggle"
@@ -101,10 +41,9 @@ export default async function Home() {
           </button>
           <ul className="nav-links" id="navLinks">
             <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
             <li><a href="#experience">Experience</a></li>
             <li><a href="#education">Education</a></li>
+            <li><a href="#blog">Blog</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
@@ -112,24 +51,38 @@ export default async function Home() {
         {/* ======================================
             HERO
             ====================================== */}
-        <section className="hero">
+        {/* Opening order (ClientBehaviors): the name alone, centred -> it cuts
+            away -> the statement types -> "Got an idea?" and the generated
+            "let's talk" together -> only then does the ambient backdrop start. */}
+        <section className="hero" data-stage="name">
           <div className="container">
             <div className="section-num">01</div>
+            <div className="hero-name">
+              <h1 data-glitch="soft">Hi, I&apos;m <span className="underline-cyan">Matthew McDowall</span></h1>
+            </div>
             <div className="hero-grid">
               <div className="hero-left">
-                <h1>Hi, I&apos;m <span className="underline-cyan">Matthew McDowall</span></h1>
-                <p className="hero-bio">I build end-to-end AI systems that ship to production — not just demos. From agentic LLM workflows and RAG pipelines to the data infrastructure under them, I turn ideas into products people actually use. <strong>Got an idea?</strong></p>
-                <div className="hero-cta">
-                  <a href="#contact" className="btn btn-primary">Let&apos;s Talk</a>
-                  <a href="#projects" className="btn btn-ghost">See My Work {"↓"}</a>
+                {/* Typed sequence: statement -> "Got an idea?" (ClientBehaviors) */}
+                <div className="hero-seq" id="heroSeq">
+                  <div className="hero-slide hero-slide-statement active">
+                    <p className="statement-line" data-type data-type-speed="34">I build real AI products</p>
+                    <p className="statement-line" data-type data-type-speed="34">that get shipped to production</p>
+                    <p className="statement-line statement-red" data-type data-type-speed="40">not just demos</p>
+                  </div>
+                  <div className="hero-slide hero-slide-ask">
+                    <p className="hero-ask" data-type data-type-speed="60" data-keep-cursor data-glitch>Got an idea?</p>
+                  </div>
                 </div>
               </div>
-              <div className="hero-tags">
-                <div className="hero-tag">#AgenticAI</div>
-                <div className="hero-tag">#RAGSystems</div>
-                <div className="hero-tag">#LLMs</div>
-                <div className="hero-tag">#LangGraph</div>
-                <div className="hero-tag">#Python</div>
+              <div className="hero-right">
+                {/* "let's talk" is generated live: its code types out, then it comes to life (ClientBehaviors). */}
+                <div className="cta-gen" id="ctaGen">
+                  <pre className="cta-code frame" id="ctaCode" aria-hidden="true"></pre>
+                  <div className="cta-wrap">
+                    <div className="cta-lock frame" aria-hidden="true"></div>
+                    <a href="#contact" className="btn btn-primary btn-xl cta-live" id="ctaLive">let&apos;s talk</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -138,31 +91,45 @@ export default async function Home() {
         {/* ======================================
             ABOUT
             ====================================== */}
-        <section id="about">
+        {/* The HUD stands down while this is on screen (Ambient.tsx reads
+            data-ambient="calm"): the About copy and the tech marquees are for
+            reading, and floating blocks over them were distracting. */}
+        <section id="about" data-ambient="calm">
           <div className="container">
             <div className="section-num">02</div>
             <div className="about-grid">
-              {/* Left: Photo */}
+              {/* Left: the record */}
               <div className="reveal-left">
-                <div className="about-photo">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/photo-cropped.jpg" alt="Matthew McDowall" />
-                </div>
-              </div>
-
-              {/* Right: Text */}
-              <div className="reveal">
-                <h2 className="section-title">About</h2>
-                <div className="about-text">
-                  <p>I&apos;m Matthew McDowall — an applied AI engineer who builds custom, domain-specific, end-to-end AI applications. Not demos. Full systems that go from client conversations and concepts to production.</p>
-                  <p>I&apos;m the Applied AI &amp; Automation Engineer Lead at North Light AI, where I went from intern to owning the design and production rollout of our core products: an agentic supplier-matching platform used by 200+ SMBs and NASA, and Lesson Desk, an AI teaching platform. B.S. in Data Analytics &amp; Data Science from the University of New Hampshire, class of 2026.</p>
-                </div>
+                <h2 className="section-title" data-type data-glitch>About</h2>
+                <dl className="about-record">
+                  <div>
+                    <dt>who</dt>
+                    <dd data-type>Matthew McDowall — applied AI engineer.</dd>
+                  </div>
+                  <div>
+                    <dt>what</dt>
+                    <dd data-type data-type-delay="700">Custom, domain-specific, end-to-end AI systems that ship to production. Not demos.</dd>
+                  </div>
+                  <div>
+                    <dt>where</dt>
+                    <dd data-type data-type-delay="1700">Currently Applied AI &amp; Automation Engineer Lead @ North Light AI</dd>
+                  </div>
+                  <div>
+                    <dt>degree</dt>
+                    <dd data-type data-type-delay="2600">B.S. in Data Analytics &amp; Data Science, University of New Hampshire, class of 2026.</dd>
+                  </div>
+                </dl>
 
                 <div className="fun-facts">
                   <div className="fun-chip">Shipped a product to NASA</div>
                   <div className="fun-chip">Intern {"→"} engineering lead</div>
                   <div className="fun-chip">RAG &amp; agentic systems builder</div>
                 </div>
+              </div>
+
+              {/* Right: feed window (the ambient footage renders inside it) */}
+              <div className="reveal">
+                <div className="viewfinder viewfinder-about" data-label="feed_01 — live" aria-hidden="true"></div>
               </div>
             </div>
 
@@ -178,21 +145,21 @@ export default async function Home() {
                   <span className="bento-username">Claude Code</span>
                 </div>
                 <div className="bento-stats-row" style={{ gap: "20px" }}>
-                  <div style={{ border: "1.5px solid #E5E0D8", borderRadius: "6px", padding: "8px 14px", flex: 1 }}>
+                  <div style={{ border: "1px solid var(--hair)", borderRadius: 0, padding: "8px 14px", flex: 1 }}>
                     <span className="bento-label">Tokens</span>
                     <span className="bento-stat" style={{ fontSize: "1.2rem" }} id="claude-tokens">--</span>
                   </div>
-                  <div style={{ border: "1.5px solid #E5E0D8", borderRadius: "6px", padding: "8px 14px", flex: 1 }}>
+                  <div style={{ border: "1px solid var(--hair)", borderRadius: 0, padding: "8px 14px", flex: 1 }}>
                     <span className="bento-label">Days</span>
                     <span className="bento-stat" style={{ fontSize: "1.2rem" }} id="claude-days">--</span>
                   </div>
                 </div>
                 <div className="claude-heatmap" style={{ marginTop: "14px" }}>
-                  <div id="claude-month-labels" style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--muted)", padding: "0 2px" }}></div>
+                  <div id="claude-month-labels" style={{ display: "grid", marginBottom: "6px", fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--red)", letterSpacing: "0.08em", padding: "0 2px" }}></div>
                   <div id="claude-heatmap-grid"></div>
                 </div>
                 <div style={{ marginTop: "10px" }}>
-                  <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: "0.7rem", padding: "4px 12px", background: "#D4956B", color: "white", borderRadius: "12px" }}>#Claude</span>
+                  <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: "0.7rem", padding: "4px 12px", background: "var(--red)", color: "#fff", borderRadius: 0, letterSpacing: "0.05em" }}>#Claude</span>
                 </div>
               </div>
 
@@ -205,231 +172,120 @@ export default async function Home() {
                   <span className="bento-username">@matthewmcdowall</span>
                 </div>
                 <div className="bento-stats-row" style={{ gap: "20px" }}>
-                  <div style={{ border: "1.5px solid #E5E0D8", borderRadius: "6px", padding: "8px 14px", flex: 1 }}>
+                  <div style={{ border: "1px solid var(--hair)", borderRadius: 0, padding: "8px 14px", flex: 1 }}>
                     <span className="bento-label">Repos</span>
                     <span className="bento-stat" style={{ fontSize: "1.2rem" }} id="github-repos">{data.github?.publicRepos ?? "--"}</span>
                   </div>
-                  <div style={{ border: "1.5px solid #E5E0D8", borderRadius: "6px", padding: "8px 14px", flex: 1 }}>
+                  <div style={{ border: "1px solid var(--hair)", borderRadius: 0, padding: "8px 14px", flex: 1 }}>
                     <span className="bento-label">Followers</span>
                     <span className="bento-stat" style={{ fontSize: "1.2rem" }} id="github-followers">{data.github?.followers ?? "--"}</span>
                   </div>
                 </div>
                 <div className="bento-contrib-graph">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="https://ghchart.rshah.org/matthewmcdowall" alt="GitHub Contributions" />
+                  <img src="https://ghchart.rshah.org/8E0E0E/matthewmcdowall" alt="GitHub Contributions" />
                 </div>
                 <div style={{ marginTop: "10px" }}>
-                  <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: "0.7rem", padding: "4px 12px", background: "#1A1A1A", color: "white", borderRadius: "12px" }}>#OpenSource</span>
-                </div>
-              </a>
-
-              {/* Spotify */}
-              <div className="bento-card">
-                <div className="bento-card-header">
-                  <div className="bento-card-icon spotify">
-                    <svg viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-                  </div>
-                  <span className="bento-username" id="spotify-label">Currently Listening</span>
-                </div>
-                <div className="bento-spotify-embed" id="spotify-embed"></div>
-              </div>
-
-              {/* Hugging Face */}
-              <a href="https://huggingface.co/MatthewMcDowall" target="_blank" rel="noopener" className="bento-card" id="hf-card">
-                <div className="bento-card-header">
-                  <div className="bento-card-icon huggingface">
-                    <span style={{ fontSize: "22px", lineHeight: 1 }}>{"🤗"}</span>
-                  </div>
-                  <span className="bento-username">@MatthewMcDowall</span>
-                </div>
-                <div className="bento-stats-row" style={{ gap: "20px" }}>
-                  <div style={{ border: "1.5px solid #E5E0D8", borderRadius: "6px", padding: "8px 14px", flex: 1 }}>
-                    <span className="bento-label">Following</span>
-                    <span className="bento-stat" style={{ fontSize: "1.2rem" }} id="hf-following">{data.huggingface?.numFollowing ?? "--"}</span>
-                  </div>
-                </div>
-                <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--muted)", marginTop: "12px", flex: 1 }}>Exploring models, datasets &amp; spaces</p>
-                <div style={{ marginTop: "10px" }}>
-                  <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: "0.7rem", padding: "4px 12px", background: "#FFD21E", color: "#1A1A1A", borderRadius: "12px" }}>#HuggingFace</span>
+                  <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: "0.7rem", padding: "4px 12px", background: "var(--red)", color: "#fff", borderRadius: 0, letterSpacing: "0.05em" }}>#OpenSource</span>
                 </div>
               </a>
 
             </div>
-          </div>
-        </section>
 
-        {/* ======================================
-            SKILLS (Marquee)
-            ====================================== */}
-        <section id="skills" className="skills-section">
-          <div className="container">
-            <div className="reveal">
-              <h2 className="section-title">Tech I Work With</h2>
-            </div>
-          </div>
-
-          {/* Row 1: Languages & Frameworks */}
-          <div className="marquee-wrap" style={{ marginBottom: "12px" }}>
-            <div className="marquee-track">
-              <span className="marquee-chip">Python</span>
-              <span className="marquee-chip">TypeScript</span>
-              <span className="marquee-chip">JavaScript</span>
-              <span className="marquee-chip">SQL</span>
-              <span className="marquee-chip">PyTorch</span>
-              <span className="marquee-chip">Transformers</span>
-              <span className="marquee-chip">Hugging Face</span>
-              <span className="marquee-chip">LangChain</span>
-              <span className="marquee-chip">LangGraph</span>
-              <span className="marquee-chip">Pandas</span>
-              <span className="marquee-chip">Spark</span>
-              <span className="marquee-chip">FastAPI</span>
-              <span className="marquee-chip">React.js</span>
-              {/* Duplicate for seamless loop */}
-              <span className="marquee-chip">Python</span>
-              <span className="marquee-chip">TypeScript</span>
-              <span className="marquee-chip">JavaScript</span>
-              <span className="marquee-chip">SQL</span>
-              <span className="marquee-chip">PyTorch</span>
-              <span className="marquee-chip">Transformers</span>
-              <span className="marquee-chip">Hugging Face</span>
-              <span className="marquee-chip">LangChain</span>
-              <span className="marquee-chip">LangGraph</span>
-              <span className="marquee-chip">Pandas</span>
-              <span className="marquee-chip">Spark</span>
-              <span className="marquee-chip">FastAPI</span>
-              <span className="marquee-chip">React.js</span>
-            </div>
-          </div>
-
-          {/* Row 2: LLM & RAG (reverse) */}
-          <div className="marquee-wrap" style={{ marginBottom: "12px" }}>
-            <div className="marquee-track marquee-reverse">
-              <span className="marquee-chip">Agentic Systems</span>
-              <span className="marquee-chip">Claude</span>
-              <span className="marquee-chip">Llama</span>
-              <span className="marquee-chip">Qwen</span>
-              <span className="marquee-chip">LoRA / QLoRA</span>
-              <span className="marquee-chip">Hybrid Vector + BM25</span>
-              <span className="marquee-chip">Semantic Chunking</span>
-              <span className="marquee-chip">RAG Pipelines</span>
-              <span className="marquee-chip">Ollama</span>
-              <span className="marquee-chip">ChromaDB</span>
-              <span className="marquee-chip">pgvector</span>
-              <span className="marquee-chip">Docling</span>
-              {/* Duplicate */}
-              <span className="marquee-chip">Agentic Systems</span>
-              <span className="marquee-chip">Claude</span>
-              <span className="marquee-chip">Llama</span>
-              <span className="marquee-chip">Qwen</span>
-              <span className="marquee-chip">LoRA / QLoRA</span>
-              <span className="marquee-chip">Hybrid Vector + BM25</span>
-              <span className="marquee-chip">Semantic Chunking</span>
-              <span className="marquee-chip">RAG Pipelines</span>
-              <span className="marquee-chip">Ollama</span>
-              <span className="marquee-chip">ChromaDB</span>
-              <span className="marquee-chip">pgvector</span>
-              <span className="marquee-chip">Docling</span>
-            </div>
-          </div>
-
-          {/* Row 3: Infrastructure & Data */}
-          <div className="marquee-wrap">
-            <div className="marquee-track" style={{ animationDuration: "40s" }}>
-              <span className="marquee-chip">PostgreSQL</span>
-              <span className="marquee-chip">AWS Bedrock</span>
-              <span className="marquee-chip">AWS Lambda</span>
-              <span className="marquee-chip">Google Cloud</span>
-              <span className="marquee-chip">Git</span>
-              <span className="marquee-chip">CI/CD</span>
-              <span className="marquee-chip">REST APIs</span>
-              <span className="marquee-chip">NLP</span>
-              <span className="marquee-chip">Reinforcement Learning</span>
-              <span className="marquee-chip">Machine Learning</span>
-              <span className="marquee-chip">Information Retrieval</span>
-              {/* Duplicate */}
-              <span className="marquee-chip">PostgreSQL</span>
-              <span className="marquee-chip">AWS Bedrock</span>
-              <span className="marquee-chip">AWS Lambda</span>
-              <span className="marquee-chip">Google Cloud</span>
-              <span className="marquee-chip">Git</span>
-              <span className="marquee-chip">CI/CD</span>
-              <span className="marquee-chip">REST APIs</span>
-              <span className="marquee-chip">NLP</span>
-              <span className="marquee-chip">Reinforcement Learning</span>
-              <span className="marquee-chip">Machine Learning</span>
-              <span className="marquee-chip">Information Retrieval</span>
-            </div>
-          </div>
-        </section>
-
-        {/* ======================================
-            PROJECTS
-            ====================================== */}
-        <section id="projects">
-          <div className="container">
-            <div className="section-num">03</div>
-            <div className="reveal">
-              <h2 className="section-title">Things I&apos;ve Built</h2>
-            </div>
-
-            <div className="projects-grid stagger">
-
-              {/* Featured: Prime Ready */}
-              <div className="project-featured reveal">
-                <div className="card project-card">
-                  <div className="project-visual" id="primeReadyVisual" style={{ overflow: "hidden", padding: 0 }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/prime-ready.jpg"
-                      alt="Prime Ready Launch"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", display: "block" }}
-                    />
-                  </div>
-                  <div>
-                    <h3>Prime Ready — NHADC</h3>
-                    <p>Agentic LLM matchmaking platform that pairs small-to-medium suppliers with Prime contractors through natural-language search, cutting 6+ weeks of manual discovery to minutes. Concept to production in 2 months with a 4-person team; now reaching 200+ SMBs and a NASA deployment. Tuning the hybrid retrieval stack raised hit rate@5 from 74% to 92%.</p>
-                    <div className="project-tags" style={{ marginTop: "14px" }}>
-                      <span className="chip">Python</span>
-                      <span className="chip">LangGraph</span>
-                      <span className="chip">AWS Bedrock</span>
-                      <span className="chip">pgvector</span>
-                      <span className="chip">PostgreSQL</span>
-                    </div>
-                  </div>
+            {/* Tech I work with — the marquee, straight under the stats */}
+            <div className="about-marquees">
+              {/* Row 1: Languages & Frameworks */}
+              <div className="marquee-wrap" style={{ marginBottom: "12px" }}>
+                <div className="marquee-track">
+                  <span className="marquee-chip">Python</span>
+                  <span className="marquee-chip">TypeScript</span>
+                  <span className="marquee-chip">JavaScript</span>
+                  <span className="marquee-chip">SQL</span>
+                  <span className="marquee-chip">PyTorch</span>
+                  <span className="marquee-chip">Transformers</span>
+                  <span className="marquee-chip">Hugging Face</span>
+                  <span className="marquee-chip">LangChain</span>
+                  <span className="marquee-chip">LangGraph</span>
+                  <span className="marquee-chip">Pandas</span>
+                  <span className="marquee-chip">Spark</span>
+                  <span className="marquee-chip">FastAPI</span>
+                  <span className="marquee-chip">React.js</span>
+                  {/* Duplicate for seamless loop */}
+                  <span className="marquee-chip">Python</span>
+                  <span className="marquee-chip">TypeScript</span>
+                  <span className="marquee-chip">JavaScript</span>
+                  <span className="marquee-chip">SQL</span>
+                  <span className="marquee-chip">PyTorch</span>
+                  <span className="marquee-chip">Transformers</span>
+                  <span className="marquee-chip">Hugging Face</span>
+                  <span className="marquee-chip">LangChain</span>
+                  <span className="marquee-chip">LangGraph</span>
+                  <span className="marquee-chip">Pandas</span>
+                  <span className="marquee-chip">Spark</span>
+                  <span className="marquee-chip">FastAPI</span>
+                  <span className="marquee-chip">React.js</span>
                 </div>
               </div>
 
-              {/* Project 2: NMS RAG Chatbot */}
-              <div className="reveal">
-                <div className="card project-card">
-                  <h3>AI-Driven NMS Chatbot — SubCom</h3>
-                  <p>Locally hosted assistant for SubCom&apos;s subsea cable Network Management System. Parses proprietary NMS documentation with Docling, embeds it into ChromaDB, and answers natural-language questions grounded in the source docs — 94% retrieval accuracy (P@10, NDCG@5), sub-second latency on VRAM-constrained VMs, fully air-gapped with zero external API calls.</p>
-                  <div className="project-tags">
-                    <span className="chip">Qwen3</span>
-                    <span className="chip">Ollama</span>
-                    <span className="chip">Docling</span>
-                    <span className="chip">ChromaDB</span>
-                    <span className="chip">FastAPI</span>
-                    <span className="chip">React + TypeScript</span>
-                  </div>
+              {/* Row 2: LLM & RAG (reverse) */}
+              <div className="marquee-wrap" style={{ marginBottom: "12px" }}>
+                <div className="marquee-track marquee-reverse">
+                  <span className="marquee-chip">Agentic Systems</span>
+                  <span className="marquee-chip">Claude</span>
+                  <span className="marquee-chip">Llama</span>
+                  <span className="marquee-chip">Qwen</span>
+                  <span className="marquee-chip">LoRA / QLoRA</span>
+                  <span className="marquee-chip">Hybrid Vector + BM25</span>
+                  <span className="marquee-chip">Semantic Chunking</span>
+                  <span className="marquee-chip">RAG Pipelines</span>
+                  <span className="marquee-chip">Ollama</span>
+                  <span className="marquee-chip">ChromaDB</span>
+                  <span className="marquee-chip">pgvector</span>
+                  <span className="marquee-chip">Docling</span>
+                  {/* Duplicate */}
+                  <span className="marquee-chip">Agentic Systems</span>
+                  <span className="marquee-chip">Claude</span>
+                  <span className="marquee-chip">Llama</span>
+                  <span className="marquee-chip">Qwen</span>
+                  <span className="marquee-chip">LoRA / QLoRA</span>
+                  <span className="marquee-chip">Hybrid Vector + BM25</span>
+                  <span className="marquee-chip">Semantic Chunking</span>
+                  <span className="marquee-chip">RAG Pipelines</span>
+                  <span className="marquee-chip">Ollama</span>
+                  <span className="marquee-chip">ChromaDB</span>
+                  <span className="marquee-chip">pgvector</span>
+                  <span className="marquee-chip">Docling</span>
                 </div>
               </div>
 
-              {/* Project 3: Lesson Desk */}
-              <div className="reveal">
-                <div className="card project-card">
-                  <h3>Lesson Desk — North Light AI</h3>
-                  <p>AI-powered teaching platform that automates lesson planning and content creation so educators get their time back. Leading development from architecture through production: Claude-driven generation, a rich in-browser editor, and export to the formats teachers actually use.</p>
-                  <div className="project-tags">
-                    <span className="chip">Claude</span>
-                    <span className="chip">Next.js</span>
-                    <span className="chip">React</span>
-                    <span className="chip">TypeScript</span>
-                    <span className="chip">Firebase</span>
-                  </div>
+              {/* Row 3: Infrastructure & Data */}
+              <div className="marquee-wrap">
+                <div className="marquee-track" style={{ animationDuration: "40s" }}>
+                  <span className="marquee-chip">PostgreSQL</span>
+                  <span className="marquee-chip">AWS Bedrock</span>
+                  <span className="marquee-chip">AWS Lambda</span>
+                  <span className="marquee-chip">Google Cloud</span>
+                  <span className="marquee-chip">Git</span>
+                  <span className="marquee-chip">CI/CD</span>
+                  <span className="marquee-chip">REST APIs</span>
+                  <span className="marquee-chip">NLP</span>
+                  <span className="marquee-chip">Reinforcement Learning</span>
+                  <span className="marquee-chip">Machine Learning</span>
+                  <span className="marquee-chip">Information Retrieval</span>
+                  {/* Duplicate */}
+                  <span className="marquee-chip">PostgreSQL</span>
+                  <span className="marquee-chip">AWS Bedrock</span>
+                  <span className="marquee-chip">AWS Lambda</span>
+                  <span className="marquee-chip">Google Cloud</span>
+                  <span className="marquee-chip">Git</span>
+                  <span className="marquee-chip">CI/CD</span>
+                  <span className="marquee-chip">REST APIs</span>
+                  <span className="marquee-chip">NLP</span>
+                  <span className="marquee-chip">Reinforcement Learning</span>
+                  <span className="marquee-chip">Machine Learning</span>
+                  <span className="marquee-chip">Information Retrieval</span>
                 </div>
               </div>
-
             </div>
           </div>
         </section>
@@ -439,9 +295,10 @@ export default async function Home() {
             ====================================== */}
         <section id="experience">
           <div className="container">
-            <div className="section-num">04</div>
+            <div className="section-num">03</div>
+            <div className="corrupt-anchor" data-corrupt-anchor aria-hidden="true"></div>
             <div className="reveal">
-              <h2 className="section-title">Experience</h2>
+              <h2 className="section-title" data-type data-glitch>Experience</h2>
             </div>
 
             <div className="timeline stagger">
@@ -452,14 +309,53 @@ export default async function Home() {
                 <div className="timeline-company">
                   North Light AI — Durham, NH <span className="badge">Current</span>
                 </div>
-                <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "var(--muted)", margin: "6px 0 10px" }}>Intern (Dec 2024) {"→"} part-time engineer (Sep 2025) {"→"} full-time engineering lead (May 2026), owning the design and production rollout of North Light AI&apos;s core products and managing interns.</p>
+                <p className="timeline-summary">Intern (Dec 2024) {"→"} part-time engineer (Sep 2025) {"→"} full-time engineering lead (May 2026), owning the design and production rollout of North Light AI&apos;s core products and managing interns.</p>
+                <div className="timeline-products">
+                  <div className="timeline-product">
+                    <div className="product-label">product</div>
+                    <h4>Prime Ready — NHADC</h4>
+                    <p>Agentic LLM matchmaking platform that pairs small-to-medium suppliers with Prime contractors through natural-language search, cutting 6+ weeks of manual discovery to minutes. Concept to production in 2 months with a 4-person team; now reaching 200+ SMBs and a NASA deployment. Tuning the hybrid retrieval stack raised hit rate@5 from 74% to 92%.</p>
+                    <div className="project-tags">
+                      <span className="chip">Python</span>
+                      <span className="chip">LangGraph</span>
+                      <span className="chip">AWS Bedrock</span>
+                      <span className="chip">pgvector</span>
+                      <span className="chip">PostgreSQL</span>
+                    </div>
+                  </div>
+                  <div className="timeline-product">
+                    <div className="product-label">product</div>
+                    <h4>Lesson Desk — North Light AI</h4>
+                    <p>AI-powered teaching platform that automates lesson planning and content creation so educators get their time back. Leading development from architecture through production: rolled out to a small group of K-12 teachers, in partnership with the University of New Hampshire, with a rich in-browser editor and export to the formats teachers actually use.</p>
+                    <div className="project-tags">
+                      <span className="chip">Next.js</span>
+                      <span className="chip">React</span>
+                      <span className="chip">TypeScript</span>
+                      <span className="chip">Firebase</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="timeline-item card reveal">
+                <div className="timeline-date">Sep 2025 — May 2026</div>
+                <h3>AI-Driven NMS Chatbot</h3>
+                <div className="timeline-company">
+                  SubCom
+                </div>
                 <ul>
-                  <li>Architected and deployed a fully agentic LLM system on AWS with Python and LangGraph, cutting supplier discovery from 6+ weeks of manual work to minutes via natural-language search</li>
-                  <li>Drove concept-to-production delivery in 2 months with a 4-person team, reaching 200+ SMBs and a NASA deployment</li>
-                  <li>Leading development of Lesson Desk, an AI-powered teaching platform that automates lesson planning and content creation for educators</li>
-                  <li>Raised retrieval hit rate@5 from 74% to 92% on the supplier-profile RAG pipelines through pgvector embedding-model evaluation, chunk-size tuning, and hybrid vector-search scoring</li>
-                  <li>Cleaned and integrated ~100 GB of messy, unstructured data sources via REST APIs, with Git-managed codebases supporting reliable iteration and releases</li>
+                  <li>Locally hosted assistant for SubCom&apos;s subsea cable Network Management System, fully air-gapped with zero external API calls</li>
+                  <li>Parses proprietary NMS documentation with Docling, embeds it into ChromaDB, and answers natural-language questions grounded in the source docs</li>
+                  <li>94% retrieval accuracy (P@10, NDCG@5) at sub-second latency on VRAM-constrained VMs</li>
                 </ul>
+                <div className="project-tags">
+                  <span className="chip">Qwen3</span>
+                  <span className="chip">Ollama</span>
+                  <span className="chip">Docling</span>
+                  <span className="chip">ChromaDB</span>
+                  <span className="chip">FastAPI</span>
+                  <span className="chip">React + TypeScript</span>
+                </div>
               </div>
 
               <div className="timeline-item card reveal">
@@ -486,16 +382,6 @@ export default async function Home() {
                 </ul>
               </div>
 
-              <div className="timeline-item card reveal">
-                <div className="timeline-date">Winter 2024 — May 2026</div>
-                <h3>Member, Reinforcement Learning Research Lab</h3>
-                <div className="timeline-company">
-                  University of New Hampshire
-                </div>
-                <ul>
-                  <li>Weekly seminar presenting and peer-reviewing current reinforcement learning research literature</li>
-                </ul>
-              </div>
 
             </div>
           </div>
@@ -506,9 +392,9 @@ export default async function Home() {
             ====================================== */}
         <section id="education">
           <div className="container">
-            <div className="section-num">05</div>
+            <div className="section-num">04</div>
             <div className="reveal">
-              <h2 className="section-title">Education</h2>
+              <h2 className="section-title" data-type data-glitch>Education</h2>
             </div>
 
             <div className="education-grid stagger">
@@ -525,14 +411,56 @@ export default async function Home() {
         </section>
 
         {/* ======================================
+            BLOG — skeleton: real posts from content/blog, placeholders after
+            ====================================== */}
+        <section id="blog">
+          <div className="container">
+            <div className="section-num">05</div>
+            <div className="reveal">
+              <h2 className="section-title" data-type data-glitch>Blog</h2>
+            </div>
+            <div className="blog-grid stagger">
+              {posts.map((post) => (
+                <Link key={post.slug} href={`/blog/${post.slug}`} className="card blog-card reveal">
+                  <span className="blog-date">
+                    {new Date(post.frontmatter.date).toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
+                  </span>
+                  <h3>{post.frontmatter.title}</h3>
+                  <p>{post.frontmatter.description}</p>
+                  {post.frontmatter.tags && (
+                    <div className="project-tags">
+                      {post.frontmatter.tags.map((tag) => (
+                        <span key={tag} className="chip">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+              ))}
+              {Array.from({ length: Math.max(0, 3 - posts.length) }).map((_, i) => (
+                <div key={i} className="card blog-card blog-card-empty reveal" aria-hidden="true">
+                  <span className="blog-date">soon_</span>
+                  <div className="skel skel-title"></div>
+                  <div className="skel"></div>
+                  <div className="skel skel-short"></div>
+                </div>
+              ))}
+            </div>
+            <div className="reveal" style={{ marginTop: "28px" }}>
+              <Link href="/blog" className="btn btn-ghost">all posts</Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ======================================
             CONTACT
             ====================================== */}
         <section id="contact" className="contact-section">
           <div className="container">
             <div className="section-num">06</div>
             <div className="contact-inner reveal">
-              <h2>Let&apos;s build something.</h2>
-              <p className="subtitle">Open to internships, collaborations, and interesting problems.</p>
+              <Pyramid className="mark-contact" />
+              <h2 data-type data-glitch>Let&apos;s build something.</h2>
+              <p className="subtitle">Open to full-time roles, collaborations, and interesting problems.</p>
               <a href="/contact" className="contact-email-btn">
                 {"✉"} Say Hello
               </a>
@@ -557,16 +485,15 @@ export default async function Home() {
         {/* Footer */}
         <div className="footer">
           <p>{"©"} 2026 Matthew McDowall — Built with care</p>
+          <p className="footer-credit">koi footage: <a href="https://commons.wikimedia.org/wiki/File:Koi_pond_in_Otaguro_Park.webm" target="_blank" rel="noopener noreferrer">Koi pond in Otaguro Park</a> by Dandy1022, CC BY-SA 4.0 — trimmed, looped and posterized</p>
         </div>
 
-      </div>{/* end .site-content */}
+      </div>{/* end #siteContent */}
 
       <BentoData
         claudeActivity={data.claude?.dailyActivity}
         claudeTokens={data.claude?.totalTokens}
         claudeDays={data.claude?.activeDays}
-        spotifyShowId={data.spotify.showId}
-        spotifyLabel={data.spotify.label}
       />
       <ClientBehaviors />
     </>
