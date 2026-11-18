@@ -1,9 +1,9 @@
 {
-  "lastUpdated": "2026-11-17T11:00:07.605031+00:00",
+  "lastUpdated": "2026-11-18T11:01:21.142319+00:00",
   "claude": {
-    "totalMessages": 143851,
-    "totalTokens": 32429882959,
-    "activeDays": 269,
+    "totalMessages": 161889,
+    "totalTokens": 32617324763,
+    "activeDays": 270,
     "dailyActivity": [
       {
         "date": "2025-11-03",
@@ -1806,87 +1806,94 @@
       },
       {
         "date": "2026-11-05",
-        "messageCount": 99,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 3970,
+        "sessionCount": 2,
+        "toolCallCount": 514,
         "tokenCount": 1089733925
       },
       {
         "date": "2026-11-06",
-        "messageCount": 60,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 1524,
+        "sessionCount": 1,
+        "toolCallCount": 243,
         "tokenCount": 334773462
       },
       {
         "date": "2026-11-07",
-        "messageCount": 36,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 1106,
+        "sessionCount": 1,
+        "toolCallCount": 153,
         "tokenCount": 190886364
       },
       {
         "date": "2026-11-08",
-        "messageCount": 17,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 289,
+        "sessionCount": 1,
+        "toolCallCount": 30,
         "tokenCount": 17892875
       },
       {
         "date": "2026-11-09",
-        "messageCount": 135,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 2605,
+        "sessionCount": 15,
+        "toolCallCount": 369,
         "tokenCount": 192830139
       },
       {
         "date": "2026-11-10",
-        "messageCount": 49,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 737,
+        "sessionCount": 3,
+        "toolCallCount": 102,
         "tokenCount": 24896291
       },
       {
         "date": "2026-11-11",
-        "messageCount": 91,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 3560,
+        "sessionCount": 15,
+        "toolCallCount": 866,
         "tokenCount": 505506767
       },
       {
         "date": "2026-11-12",
-        "messageCount": 72,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 651,
+        "sessionCount": 3,
+        "toolCallCount": 128,
         "tokenCount": 109716266
       },
       {
         "date": "2026-11-13",
-        "messageCount": 39,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 1770,
+        "sessionCount": 6,
+        "toolCallCount": 501,
         "tokenCount": 221927931
       },
       {
         "date": "2026-11-14",
-        "messageCount": 10,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 227,
+        "sessionCount": 1,
+        "toolCallCount": 51,
         "tokenCount": 15530812
       },
       {
         "date": "2026-11-15",
-        "messageCount": 27,
-        "sessionCount": 0,
-        "toolCallCount": 0,
+        "messageCount": 322,
+        "sessionCount": 2,
+        "toolCallCount": 52,
         "tokenCount": 27575940
       },
       {
         "date": "2026-11-16",
-        "messageCount": 55,
+        "messageCount": 1891,
+        "sessionCount": 8,
+        "toolCallCount": 451,
+        "tokenCount": 171985571
+      },
+      {
+        "date": "2026-11-17",
+        "messageCount": 76,
         "sessionCount": 0,
         "toolCallCount": 0,
-        "tokenCount": 171985571
+        "tokenCount": 187441804
       }
     ]
   },
